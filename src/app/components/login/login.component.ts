@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 
@@ -18,10 +18,15 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  onSubmit(): void {
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: () => this.router.navigate(['/main']),
-      error: err => this.errorMessage = 'Wrong email or password'
-    });
+  onSubmit(loginForm: NgForm): void {
+  if (loginForm.invalid) {
+    loginForm.control.markAllAsTouched();
+    return;
   }
+
+  this.authService.login({ email: this.email, password: this.password }).subscribe({
+    next: () => this.router.navigate(['/main']),
+    error: err => this.errorMessage = 'Wrong email or password'
+  });
+}
 }

@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-darkgrey flex items-center justify-center">
   <div class="bg-lightgrey border border-lightblue p-8 w-80 text-marfilwhite">
-    <form (ngSubmit)="onSubmit()" class="space-y-4">
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="space-y-4">
       <div>
         <label for="email" class="block text-sm mb-1">Email</label>
         <input
@@ -9,9 +9,15 @@
           [(ngModel)]="email"
           name="email"
           required
+          email
+          #emailInput="ngModel"
           class="w-full px-3 py-2 border border-lightblue focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+          <p class="text-red-400 text-xs mt-1" *ngIf="emailInput.invalid && emailInput.touched">
+            Email is required
+          </p>
       </div>
+
       <div>
         <label for="password" class="block text-sm mb-1">Password</label>
         <input
@@ -20,9 +26,14 @@
           [(ngModel)]="password"
           name="password"
           required
+          #passwordInput="ngModel"
           class="w-full px-3 py-2 border border-lightblue focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          />
+          <p class="text-red-400 text-xs mt-1" *ngIf="passwordInput.invalid && passwordInput.touched">
+            Password is required
+          </p>
       </div>
+
       <button
         type="submit"
         class="w-30 flex justify-center justify-self-center py-2 bg-darkblue hover:border border-lightblue text-lightblue font-medium transition"
