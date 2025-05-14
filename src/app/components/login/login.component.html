@@ -1,0 +1,40 @@
+<div class="min-h-screen bg-darkgrey flex items-center justify-center">
+  <div class="bg-lightgrey border border-lightblue p-8 w-80 text-marfilwhite">
+    <form (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label for="email" class="block text-sm mb-1">Email</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          class="w-full px-3 py-2 border border-lightblue focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <label for="password" class="block text-sm mb-1">Password</label>
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          class="w-full px-3 py-2 border border-lightblue focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-30 flex justify-center justify-self-center py-2 bg-darkblue hover:border border-lightblue text-lightblue font-medium transition"
+      >
+        Sign in
+      </button>
+    </form>
+    <p class="text-red-400 text-sm mt-4 justify-self-center" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="text-center text-sm mt-6 text-marfilwhite">
+      Don’t have an account yet?
+      <a routerLink="/auth/register" class="text-lightblue hover:underline">Sign up</a>
+    </p>
+  </div>
+</div>
+
