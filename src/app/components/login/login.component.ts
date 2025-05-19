@@ -29,4 +29,16 @@ export class LoginComponent {
     error: err => this.errorMessage = 'Wrong email or password'
   });
 }
+  
+  signInDemoUser(): void {
+    this.email = 'demo@mail.com';
+    this.password = 'demo1234';
+
+    const fakeForm = {
+      invalid: false,
+      control: { markAllAsTouched: () => {} }
+    } as NgForm;
+
+    this.onSubmit(fakeForm);
+  }
 }

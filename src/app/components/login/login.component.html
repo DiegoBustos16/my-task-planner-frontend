@@ -1,6 +1,7 @@
 <div class="min-h-screen bg-darkgrey flex items-center justify-center">
   <div class="bg-lightgrey border border-lightblue p-8 w-80 text-marfilwhite">
     <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="space-y-4">
+      
       <div>
         <label for="email" class="block text-sm mb-1">Email</label>
         <input
@@ -11,11 +12,12 @@
           required
           email
           #emailInput="ngModel"
-          class="w-full px-3 py-2 border border-lightblue focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full px-3 py-2 border border-lightblue bg-darkgrey text-marfilwhite placeholder:text-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+          placeholder="example@mail.com"
         />
-          <p class="text-red-400 text-xs mt-1" *ngIf="emailInput.invalid && emailInput.touched">
-            Email is required
-          </p>
+        <p class="text-red-400 text-xs mt-1" *ngIf="emailInput.invalid && emailInput.touched">
+          Email is required
+        </p>
       </div>
 
       <div>
@@ -27,25 +29,37 @@
           name="password"
           required
           #passwordInput="ngModel"
-          class="w-full px-3 py-2 border border-lightblue focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <p class="text-red-400 text-xs mt-1" *ngIf="passwordInput.invalid && passwordInput.touched">
-            Password is required
-          </p>
+          class="w-full px-3 py-2 border border-lightblue bg-darkgrey text-marfilwhite placeholder:text-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+          placeholder="••••••"
+        />
+        <p class="text-red-400 text-xs mt-1" *ngIf="passwordInput.invalid && passwordInput.touched">
+          Password is required
+        </p>
       </div>
 
-      <button
-        type="submit"
-        class="w-30 flex justify-center justify-self-center py-2 bg-darkblue hover:border border-lightblue text-lightblue font-medium transition"
-      >
-        Sign in
-      </button>
+      <div class="space-y-2">
+        <button
+          type="submit"
+          class="w-full py-2 bg-darkblue text-lightblue border border-lightblue hover:bg-lightblue hover:text-darkblue font-medium transition"
+        >
+          Sign in
+        </button>
+        <button
+          type="button"
+          (click)="signInDemoUser()"
+          class="w-full mt-10 py-2 bg-lightblue text-darkblue border border-lightblue hover:bg-darkblue hover:text-lightblue font-medium transition"
+        >
+          Sign in with demo user
+        </button>
+      </div>
+
     </form>
-    <p class="text-red-400 text-sm mt-4 justify-self-center" *ngIf="errorMessage">{{ errorMessage }}</p>
-    <p class="text-center text-sm mt-6 text-marfilwhite">
+
+    <p class="text-red-400 text-sm mt-4 text-center" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <p class="text-center text-sm mt-6">
       Don’t have an account yet?
       <a routerLink="/auth/register" class="text-lightblue hover:underline">Sign up</a>
     </p>
   </div>
 </div>
-
