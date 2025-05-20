@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '../../constants/api-endpoints';
+import { LoginRequest } from '../../models/login-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(credentials: { email: string; password: string }): Observable<{ token: string }> {
+  login(credentials: LoginRequest): Observable<{ token: string }> {
     return this.http.post<{ token: string }>(`${API_ENDPOINTS.auth.login}`, credentials).pipe(
       tap(response => {
         localStorage.setItem('authToken', response.token);

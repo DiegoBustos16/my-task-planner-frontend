@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
+import { LoginRequest } from '../../models/login-request.model';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,12 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(loginForm: NgForm): void {
+
+  const request: LoginRequest = {
+    email: this.email,
+    password: this.password
+  };
+
   if (loginForm.invalid) {
     loginForm.control.markAllAsTouched();
     return;
