@@ -1,0 +1,31 @@
+name: Validate PR Source Branch
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-pr-origin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR origin branch
+        run: |
+          echo "Base branch: ${{ github.event.pull_request.base.ref }}"
+          echo "Head branch: ${{ github.event.pull_request.head.ref }}"
+          
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+
+          # Rule 1: PRs to 'develop' must come from 'feature/*' or 'ci-test'
+          if [[ "$BASE" == "develop" && ! "$HEAD" =~ ^(feature/*|ci-test) ]]; then
+            echo "PRs to 'develop' must come from 'feature/*' or 'ci-test'."
+            exit 1
+          fi
+
+          # Rule 2: PRs to 'main' must come from 'develop' or 'fix'
+          if [[ "$BASE" == "main" && "$HEAD" != "develop" && "$HEAD" != "fix" ]]; then
+            echo "PRs to 'main' must come from 'develop' or 'fix'."
+            exit 1
+          fi
+
+          echo "PR branch rules passed."
