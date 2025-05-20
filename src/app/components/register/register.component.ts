@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../auth/services/auth.service';
 import { RegisterRequest } from '../../models/register-request.model';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +21,7 @@ export class RegisterComponent {
   confirmPassword = '';
   errorMessage = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onRegister(registerForm: NgForm) {
     if (registerForm.invalid) {
@@ -38,12 +38,8 @@ export class RegisterComponent {
       };
 
       this.authService.register(request).subscribe({
-        next: () => {
-          console.log('User registered');
-        },
-        error: (err) => {
-          this.errorMessage = 'Registration failed: ' + (err.error?.message ?? 'Unknown error');
-        }
+        next: () => this.router.navigate(['/main']),
+        error: err => this.errorMessage = 'Registration failed: ' + (err.error?.message ?? 'Unknown error')
       });
     }
   }
