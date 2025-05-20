@@ -1,0 +1,109 @@
+<div class="min-h-screen bg-darkgrey flex items-center justify-center">
+  <div class="bg-lightgrey border border-lightblue p-8 w-80 text-marfilwhite">
+    <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)" class="space-y-4">
+
+      <div>
+        <label for="email" class="block text-sm mb-1">Email</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          email
+          #emailInput="ngModel"
+          class="w-full px-3 py-2 border border-lightblue bg-darkgrey text-marfilwhite placeholder:text-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+          placeholder="example@mail.com"
+        />
+        <p class="text-red-400 text-xs mt-1" *ngIf="emailInput.invalid && emailInput.touched">
+          Valid email is required
+        </p>
+      </div>
+
+      <div>
+        <label for="firstName" class="block text-sm mb-1">First Name</label>
+        <input
+          id="firstName"
+          type="text"
+          [(ngModel)]="firstName"
+          name="firstName"
+          required
+          #firstNameInput="ngModel"
+          class="w-full px-3 py-2 border border-lightblue bg-darkgrey text-marfilwhite placeholder:text-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+          placeholder="John"
+        />
+        <p class="text-red-400 text-xs mt-1" *ngIf="firstNameInput.invalid && firstNameInput.touched">
+          First name is required
+        </p>
+      </div>
+
+      <div>
+        <label for="lastName" class="block text-sm mb-1">Last Name</label>
+        <input
+          id="lastName"
+          type="text"
+          [(ngModel)]="lastName"
+          name="lastName"
+          required
+          #lastNameInput="ngModel"
+          class="w-full px-3 py-2 border border-lightblue bg-darkgrey text-marfilwhite placeholder:text-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+          placeholder="Doe"
+        />
+        <p class="text-red-400 text-xs mt-1" *ngIf="lastNameInput.invalid && lastNameInput.touched">
+          Last name is required
+        </p>
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm mb-1">Password</label>
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+          #passwordInput="ngModel"
+          class="w-full px-3 py-2 border border-lightblue bg-darkgrey text-marfilwhite placeholder:text-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+          placeholder="••••••••"
+        />
+        <p class="text-red-400 text-xs mt-1" *ngIf="passwordInput.invalid && passwordInput.touched">
+          Password must be at least 8 characters and alphanumeric
+        </p>
+      </div>
+
+      <div>
+        <label for="confirmPassword" class="block text-sm mb-1">Confirm Password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          required
+          #confirmPasswordInput="ngModel"
+          class="w-full px-3 py-2 border border-lightblue bg-darkgrey text-marfilwhite placeholder:text-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+          placeholder="••••••••"
+        />
+        <p class="text-red-400 text-xs mt-1" *ngIf="confirmPasswordInput.touched && password !== confirmPassword">
+          Passwords do not match
+        </p>
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          class="w-full py-2 bg-darkblue text-lightblue border border-lightblue hover:bg-lightblue hover:text-darkblue font-medium transition"
+        >
+          Register
+        </button>
+      </div>
+    </form>
+
+    <p class="text-red-400 text-sm mt-4 text-center" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <p class="text-center text-sm mt-6">
+      Already have an account?
+      <a routerLink="/login" class="text-lightblue hover:underline">Sign in</a>
+    </p>
+  </div>
+</div>

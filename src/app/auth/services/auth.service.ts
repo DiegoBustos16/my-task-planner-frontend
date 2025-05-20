@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { RegisterRequest } from '../../models/register-request.model';
 import { API_ENDPOINTS } from '../../constants/api-endpoints';
 import { LoginRequest } from '../../models/login-request.model';
 
@@ -21,6 +22,10 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('authToken');
+  }
+
+  register(request: RegisterRequest): Observable<any> {
+    return this.http.post(`${API_ENDPOINTS.auth.register}`, request);
   }
 
   isAuthenticated(): boolean {

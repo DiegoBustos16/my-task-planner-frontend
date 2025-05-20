@@ -5,6 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { provideHttpClient} from '@angular/common/http';
 import { AuthService } from './auth.service';
+import { RegisterRequest } from '../../models/register-request.model';
 import { API_ENDPOINTS } from '../../constants/api-endpoints';
 
 describe('AuthService', () => {
@@ -55,6 +56,23 @@ describe('AuthService', () => {
     localStorage.setItem('authToken', 'foo');
     service.logout();
     expect(localStorage.getItem('authToken')).toBeNull();
+  });
+
+  it('should send POST request to register endpoint', () => {
+    const mockRequest: RegisterRequest = {
+      email: 'john@mail.com',
+      firstName: 'John',
+      lastName: 'Doe',
+      password: 'Password1'
+    };
+
+    service.register(mockRequest).subscribe();
+
+    const req = httpMock.expectOne(API_ENDPOINTS.auth.register);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockRequest);
+
+    req.flush({});
   });
 
   it('isAuthenticated() should return false if no token', () => {
