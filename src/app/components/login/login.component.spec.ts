@@ -34,8 +34,8 @@ describe('LoginComponent', () => {
     });
 
     it('should have empty initial email and password', () => {
-      expect(component.email).toBe('', 'email debe iniciarse vacío');
-      expect(component.password).toBe('', 'password debe iniciarse vacío');
+      expect(component.email).toBe('');
+      expect(component.password).toBe('');
     });
 
     it('signInDemoUser should fill credentials and call onSubmit', () => {
