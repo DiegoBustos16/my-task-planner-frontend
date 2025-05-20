@@ -41,7 +41,7 @@ export class RegisterComponent {
           console.log('User registered');
         },
         error: (err) => {
-          this.errorMessage = 'Registration failed: ' + err.error?.message || 'Unknown error';
+          this.errorMessage = 'Registration failed: ' + (err.error?.message ?? 'Unknown error');
         }
       });
     }
