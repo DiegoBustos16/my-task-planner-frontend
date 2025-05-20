@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { RegisterRequest } from '../../models/register-request.model';
 import { API_ENDPOINTS } from '../../constants/api-endpoints';
 import { LoginRequest } from '../../models/login-request.model';
+import { AuthResponse } from '../../models/auth-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +13,8 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(credentials: LoginRequest): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${API_ENDPOINTS.auth.login}`, credentials).pipe(
+  login(credentials: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_ENDPOINTS.auth.login}`, credentials).pipe(
       tap(response => {
         localStorage.setItem('authToken', response.token);
       })
@@ -24,9 +25,14 @@ export class AuthService {
     localStorage.removeItem('authToken');
   }
 
-  register(request: RegisterRequest): Observable<any> {
-    return this.http.post(`${API_ENDPOINTS.auth.register}`, request);
+  register(request: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_ENDPOINTS.auth.register}`, request).pipe(
+      tap(response => {
+        localStorage.setItem('authToken', response.token);
+      })
+    );
   }
+
 
   isAuthenticated(): boolean {
   const token = localStorage.getItem('authToken');
