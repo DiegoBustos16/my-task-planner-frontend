@@ -1,0 +1,125 @@
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ElementRef,
+  HostListener
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { Board } from '../../models/board.model';
+import { BoardService } from '../../services/board.service';
+
+const NEW_BOARD_PLACEHOLDER_DEFAULT = 'New Board...';
+const NEW_BOARD_PLACEHOLDER_FOCUSED = 'Enter board name';
+
+@Component({
+  selector: 'app-sidebar',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './sidebar.component.html'
+})
+export class SidebarComponent implements OnInit {
+  @Output() boardSelected = new EventEmitter<Board>();
+
+  userName: string = 'User Name';
+  boards: Board[] = [];
+  currentPage: number = 1;
+  totalPages: number = 1;
+
+  isCollapsed: boolean = false;
+  newBoardName: string = '';
+  selectedBoard: Board | null = null;
+
+  newBoardPlaceholder: string = NEW_BOARD_PLACEHOLDER_DEFAULT;
+
+  constructor(
+    private boardService: BoardService,
+    private elementRef: ElementRef
+  ) {}
+
+  ngOnInit(): void {
+    this.fetchBoards();
+  }
+
+  getInitial(): string {
+    return this.userName.charAt(0).toUpperCase();
+  }
+
+  fetchBoards(): void {
+    this.boardService.getBoards(this.currentPage).subscribe({
+      next: ({ boards, totalPages }) => {
+        this.boards = boards;
+        this.totalPages = totalPages;
+      },
+      error: err => {
+        console.error('Error fetching boards:', err);
+      }
+    });
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.fetchBoards();
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.fetchBoards();
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const clickedInside = this.elementRef.nativeElement.contains(event.target);
+
+    if (this.isCollapsed) {
+      if (clickedInside) {
+        this.isCollapsed = false;
+      }
+    } else {
+      if (!clickedInside) {
+        this.isCollapsed = true;
+        this.newBoardName = '';
+        this.newBoardPlaceholder = NEW_BOARD_PLACEHOLDER_DEFAULT;
+      }
+    }
+  }
+
+  onNewBoardInputFocus(): void {
+    if (!this.isCollapsed) {
+      this.newBoardPlaceholder = NEW_BOARD_PLACEHOLDER_FOCUSED;
+    }
+  }
+
+  handleBoardCreationAttempt(): void {
+    const trimmedName = this.newBoardName.trim();
+
+    if (trimmedName) {
+      this.boardService.createBoard({ boardName: trimmedName }).subscribe({
+        next: created => {
+          console.log('Board created:', created);
+          this.fetchBoards();
+        },
+        error: err => {
+          console.error('Error creating board:', err);
+        }
+      });
+    }
+
+    this.newBoardName = '';
+    this.newBoardPlaceholder = NEW_BOARD_PLACEHOLDER_DEFAULT;
+  }
+
+  selectBoard(board: Board): void {
+    this.selectedBoard = board;
+    this.boardSelected.emit(board);
+    this.newBoardName = '';
+    this.newBoardPlaceholder = NEW_BOARD_PLACEHOLDER_DEFAULT;
+  }
+}

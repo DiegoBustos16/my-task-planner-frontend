@@ -1,7 +1,12 @@
 import { Routes } from '@angular/router';
 import { AuthLayoutComponent } from './components/layouts/auth-layout.component';
+import { MainLayoutComponent } from './components/layouts/main-layout.component';
 
 export const routes: Routes = [
+  {
+    path: 'main',
+    component: MainLayoutComponent
+  },
   {
     path: '',
     component: AuthLayoutComponent,

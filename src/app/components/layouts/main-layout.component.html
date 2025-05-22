@@ -1,0 +1,18 @@
+<div class="min-h-screen flex bg-darkgrey text-marfilwhite">
+  <!-- Sidebar -->
+  <app-sidebar (boardSelected)="setSelectedBoard($event)" />
+  <!-- Main content area -->
+  <div class="flex-1 p-6">
+    <ng-container *ngIf="selectedBoard; else welcome">
+      <router-outlet />
+    </ng-container>
+
+    <ng-template #welcome>
+      <div class="text-center text-marfilwhite text-3xl mt-20">
+        Welcome to <span class="text-lightblue">Your Task Planner</span>!
+        <p class="mt-4 text-xl">
+          Here, you can manage all your tasks and goals, simply and efficiently.
+      </div>
+    </ng-template>
+  </div>
+</div>
