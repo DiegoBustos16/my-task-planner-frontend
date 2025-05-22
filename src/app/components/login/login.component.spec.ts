@@ -1,31 +1,37 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../auth/services/auth.service';
+import { MainLayoutComponent } from '../layouts/main-layout.component';
+import { provideLocationMocks } from '@angular/common/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let router: Router;
 
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent,FormsModule],
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router,      useValue: routerSpy }
+        provideRouter([{ path: 'main', component: MainLayoutComponent }]),
+        provideLocationMocks(),
+        { provide: AuthService, useValue: authServiceSpy }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+
+    router = TestBed.inject(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+
     fixture.detectChanges();
   });
 
@@ -70,7 +76,7 @@ describe('LoginComponent', () => {
       expect(authServiceSpy.login).toHaveBeenCalledOnceWith({
         email: 'u@mail.com', password: 'pass'
       });
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/main']);
+      expect(router.navigate).toHaveBeenCalledWith(['/main']);
     }));
 
     it('onSubmit should set errorMessage on login error', fakeAsync(() => {
