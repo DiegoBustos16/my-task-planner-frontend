@@ -1,21 +1,26 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
 import { of, throwError } from 'rxjs';
-
+import { provideRouter, Router }                      from '@angular/router';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../auth/services/auth.service';
+import { provideLocationMocks } from '@angular/common/testing';
+import { MainLayoutComponent } from '../layouts/main-layout.component';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
-
+  let router: Router;
+  
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['register']);
 
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, FormsModule],
       providers: [
+        provideRouter([{ path: 'main', component: MainLayoutComponent }]),
+        provideLocationMocks(),
         { provide: AuthService, useValue: authServiceSpy }
       ]
     }).compileComponents();
@@ -67,7 +72,7 @@ describe('RegisterComponent', () => {
     component.password = 'Password1';
     component.confirmPassword = 'Password1';
 
-    authServiceSpy.register.and.returnValue(of({}));
+    authServiceSpy.register.and.returnValue(of({ token: 'dummy-token' }));
 
     component.onRegister(fakeForm);
     tick();
