@@ -17,8 +17,8 @@ jobs:
           HEAD="${{ github.event.pull_request.head.ref }}"
 
           # Rule 1: PRs to 'develop' must come from 'feature/*' or 'ci-test'
-          if [[ "$BASE" == "develop" && ! "$HEAD" =~ ^(feature/*|ci-test) ]]; then
-            echo "PRs to 'develop' must come from 'feature/*' or 'ci-test'."
+          if [[ "$BASE" == "develop" && ! "$HEAD" =~ ^(feature/*|fix/*|ci-test) ]]; then
+            echo "PRs to 'develop' must come from 'feature/*', 'fix/*', or 'ci-test'."
             exit 1
           fi
 
