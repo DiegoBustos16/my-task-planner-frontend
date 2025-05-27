@@ -11,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 
 import { Board } from '../../models/board.model';
 import { BoardService } from '../../services/board.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
 
 const NEW_BOARD_PLACEHOLDER_DEFAULT = 'New Board...';
 const NEW_BOARD_PLACEHOLDER_FOCUSED = 'Enter board name';
@@ -37,11 +39,13 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private boardService: BoardService,
+    private userService: UserService,
     private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
     this.fetchBoards();
+    this.fetchUser();
   }
 
   getInitial(): string {
@@ -56,6 +60,17 @@ export class SidebarComponent implements OnInit {
       },
       error: err => {
         console.error('Error fetching boards:', err);
+      }
+    });
+  }
+
+  fetchUser(): void {
+    this.userService.getUser().subscribe({
+      next: user => {
+        this.userName = user.firstName + ' ' + user.lastName;
+      },
+      error: err => {
+        console.error('Error fetching user:', err);
       }
     });
   }

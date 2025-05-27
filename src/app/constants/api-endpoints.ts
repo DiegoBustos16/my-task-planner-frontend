@@ -12,4 +12,7 @@ export const API_ENDPOINTS = {
     create: `${API_BASE_URL}/boards`,
     getById: (id: string) => `${API_BASE_URL}/boards/${id}`,
   },
+  users: {
+    getCurrent: `${API_BASE_URL}/user/me`,
+  },
 };
