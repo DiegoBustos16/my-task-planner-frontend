@@ -3,11 +3,13 @@ import { SidebarComponent } from './sidebar.component';
 import { BoardService } from '../../services/board.service';
 import { of, throwError } from 'rxjs';
 import { Board } from '../../models/board.model';
+import { UserService } from '../../services/user.service';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
   let boardServiceSpy: jasmine.SpyObj<BoardService>;
+  let userServiceSpy: jasmine.SpyObj<UserService>;
 
   const mockBoards: Board[] = [
     { id: 1, boardName: 'Board 1' },
@@ -16,17 +18,20 @@ describe('SidebarComponent', () => {
 
   beforeEach(async () => {
     const spy = jasmine.createSpyObj('BoardService', ['getBoards', 'createBoard']);
+    userServiceSpy = jasmine.createSpyObj('UserService', ['getUser']);
 
     await TestBed.configureTestingModule({
       imports: [SidebarComponent],
       providers: [
-        { provide: BoardService, useValue: spy }
+        { provide: BoardService, useValue: spy },
+        { provide: UserService, useValue: userServiceSpy }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     boardServiceSpy = TestBed.inject(BoardService) as jasmine.SpyObj<BoardService>;
+    userServiceSpy = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
   });
 
   it('should create', () => {
@@ -35,6 +40,7 @@ describe('SidebarComponent', () => {
 
   it('should fetch boards on init', () => {
     boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 2 }));
+    userServiceSpy.getUser.and.returnValue(of({ firstName: 'Diego', lastName: 'Test', email: 'diego@test.com', name: 'Diego' }));
 
     component.ngOnInit();
 
@@ -158,4 +164,59 @@ describe('SidebarComponent', () => {
     component.userName = 'diego';
     expect(component.getInitial()).toBe('D');
   });
+
+    it('should fetch user on init', () => {
+    userServiceSpy.getUser.and.returnValue(of({ firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com', name: 'Jane' }));
+    boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 1 }));
+
+    component.ngOnInit();
+
+    expect(userServiceSpy.getUser).toHaveBeenCalled();
+    expect(component.userName).toBe('Jane Doe');
+  });
+
+  it('should handle error on fetchUser', () => {
+    spyOn(console, 'error');
+    userServiceSpy.getUser.and.returnValue(throwError(() => new Error('User error')));
+
+    component.fetchUser();
+
+    expect(console.error).toHaveBeenCalledWith('Error fetching user:', jasmine.any(Error));
+  });
+
+  it('should handle error on createBoard', fakeAsync(() => {
+    spyOn(console, 'error');
+    component.newBoardName = 'Board With Error';
+    boardServiceSpy.createBoard.and.returnValue(throwError(() => new Error('Create error')));
+
+    component.handleBoardCreationAttempt();
+    tick();
+
+    expect(console.error).toHaveBeenCalledWith('Error creating board:', jasmine.any(Error));
+    expect(component.newBoardName).toBe('');
+    expect(component.newBoardPlaceholder).toBe('New Board...');
+  }));
+
+  it('should reset selectedBoard when selecting new board', () => {
+    const board1: Board = { id: 1, boardName: 'First' };
+    const board2: Board = { id: 2, boardName: 'Second' };
+    spyOn(component.boardSelected, 'emit');
+
+    component.selectBoard(board1);
+    component.selectBoard(board2);
+
+    expect(component.selectedBoard).toBe(board2);
+    expect(component.boardSelected.emit).toHaveBeenCalledWith(board2);
+  });
+
+  it('should not un-collapse if clicking inside while not collapsed', () => {
+    const event = new MouseEvent('click');
+    spyOn(component['elementRef'].nativeElement, 'contains').and.returnValue(true);
+
+    component.isCollapsed = false;
+    component.onDocumentClick(event);
+
+    expect(component.isCollapsed).toBeFalse();
+  });
+
 });
