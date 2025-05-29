@@ -4,110 +4,120 @@
       'w-60': !isCollapsed,
       'w-12': isCollapsed
     }"
-    class="bg-darkgrey text-marfilwhite flex flex-col transition-all duration-300 ease-in-out relative"
+    class="bg-darkgrey text-marfilwhite flex flex-col transition-width duration-300 ease-in-out relative"
   >
-    <!-- Header -->
-    <button
-      class="flex items-center space-x-2 p-4 justify-between cursor-pointer hover:text-lightblue transition-colors duration-200"
-      *ngIf="!isCollapsed"
-      (click)="toggleUserPanel.emit()"
-    >
+
+    <!-- Collapsed menu icon -->
+    <div *ngIf="isCollapsed" class="flex items-center justify-center py-4">
       <div
-        class="w-8 h-8 flex items-center justify-center bg-darkblue text-lightblue font-bold text-sm"
+        class="w-8 h-8 flex items-center justify-center bg-darkblue text-lightblue font-bold text-sm border border-lightblue"
       >
         {{ getInitial() }}
       </div>
-      <span class="flex-1">{{ userName }}</span>
-    </button>
-
-    <!-- Collapsed menu icon -->
-    <div *ngIf="isCollapsed" class="flex items-center justify-center p-4">
-      <div class="text-lightblue text-2xl p-2 focus:outline-none">
-        &#9776;
-      </div>
     </div>
 
-    <!-- New board input -->
-    <div *ngIf="!isCollapsed" class="border-t border-lightblue">
-      <input
-        #newBoardInput
-        [(ngModel)]="newBoardName"
-        (keydown.enter)="newBoardInput.blur(); handleBoardCreationAttempt()"
-        (focus)="onNewBoardInputFocus()"
-        type="text"
-        [placeholder]="newBoardPlaceholder"
-        class="w-full px-4 py-2 text-lightblue bg-darkblue focus:outline-none"
-      />
-    </div>
-
-    <!-- Board list -->
-    <div
-      *ngFor="let board of boards"
-      (click)="selectBoard(board)"
-      class="px-4 py-2 border-t border-lightblue cursor-pointer"
+    <!-- Header -->
+    <div class="flex flex-col h-full transition-all duration-300 ease-in-out"
       [ngClass]="{
-        'bg-lightblue text-darkblue': board === selectedBoard,
-        'hover:bg-lightblue hover:text-darkblue': board !== selectedBoard
-      }"
-      [title]="board.boardName"
-    >
-      <span *ngIf="!isCollapsed">{{ board.boardName }}</span>
-      <span
-        *ngIf="isCollapsed"
-        class="block text-center text-lg font-bold"
+        'opacity-100 translate-x-0 delay-100': !isCollapsed,
+        'opacity-0 -translate-x-10 delay-0 pointer-events-none': isCollapsed}">
+      <button
+        class="flex items-center space-x-2 p-4 justify-between cursor-pointer hover:text-lightblue transition-colors duration-200"
+        *ngIf="!isCollapsed"
+        (click)="toggleUserPanel.emit()"
       >
-        {{ board.boardName.charAt(0).toUpperCase() }}
-      </span>
-    </div>
+        <div
+          class="w-8 h-8 flex items-center justify-center bg-darkblue text-lightblue font-bold text-sm border border-lightblue"
+        >
+          {{ getInitial() }}
+        </div>
+        <span class="flex-1">{{ userName }}</span>
+      </button>
 
-    <!-- Pagination -->
-    <div
-      *ngIf="!isCollapsed"
-      class="mt-auto px-4 py-2 border-t border-lightblue flex justify-between items-center text-marfilwhite"
-    >
-      <button
-        (click)="prevPage()"
-        class="px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-        [disabled]="currentPage === 1"
+      
+
+      <!-- New board input -->
+      <div *ngIf="!isCollapsed" class="border-t border-lightblue">
+        <input
+          #newBoardInput
+          [(ngModel)]="newBoardName"
+          (keydown.enter)="newBoardInput.blur(); handleBoardCreationAttempt()"
+          (focus)="onNewBoardInputFocus()"
+          type="text"
+          [placeholder]="newBoardPlaceholder"
+          class="w-full px-4 py-2 text-lightblue bg-darkblue focus:outline-none"
+        />
+      </div>
+
+      <!-- Board list -->
+      <div
+        *ngFor="let board of boards"
+        (click)="selectBoard(board)"
+        class="px-4 py-2 border-t border-lightblue cursor-pointer"
+        [ngClass]="{
+          'bg-lightblue text-darkblue': board === selectedBoard,
+          'hover:bg-lightblue hover:text-darkblue': board !== selectedBoard
+        }"
+        [title]="board.boardName"
       >
-        <svg
-          class="w-6 h-6 text-marfilwhite hover:text-lightblue"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+        <span *ngIf="!isCollapsed">{{ board.boardName }}</span>
+        <span
+          *ngIf="isCollapsed"
+          class="block text-center text-lg font-bold"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          ></path>
-        </svg>
-      </button>
-      <span class="text-lg font-semibold">
-        {{ currentPage }} / {{ totalPages }}
-      </span>
-      <button
-        (click)="nextPage()"
-        class="px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-        [disabled]="currentPage === totalPages"
+          {{ board.boardName.charAt(0).toUpperCase() }}
+        </span>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        *ngIf="!isCollapsed"
+        class="mt-auto px-4 py-2 border-t border-lightblue flex justify-between items-center text-marfilwhite"
       >
-        <svg
-          class="w-6 h-6 text-marfilwhite hover:text-lightblue"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+        <button
+          (click)="prevPage()"
+          class="px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+          [disabled]="currentPage === 1"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
-          ></path>
-        </svg>
-      </button>
+          <svg
+            class="w-6 h-6 text-marfilwhite hover:text-lightblue"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+        </button>
+        <span class="text-lg font-semibold">
+          {{ currentPage }} / {{ totalPages }}
+        </span>
+        <button
+          (click)="nextPage()"
+          class="px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+          [disabled]="currentPage === totalPages"
+        >
+          <svg
+            class="w-6 h-6 text-marfilwhite hover:text-lightblue"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            ></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>
