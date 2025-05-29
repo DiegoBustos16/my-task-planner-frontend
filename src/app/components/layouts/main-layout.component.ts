@@ -12,9 +12,18 @@ import { Board } from "../../models/board.model";
 })
 export class MainLayoutComponent {
   selectedBoard: Board | null = null;
+  showUserPanel: boolean = false;
 
   setSelectedBoard(board: Board) {
+    this.showUserPanel = false;
     this.selectedBoard = board;
+  }
+
+  toggleUserPanel(): void {
+    this.showUserPanel = !this.showUserPanel;
+    if (this.showUserPanel) {
+      this.selectedBoard = null;
+    }
   }
 
   selectedBoardId(): number | null {

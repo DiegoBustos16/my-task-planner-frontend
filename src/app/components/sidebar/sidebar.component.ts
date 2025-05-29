@@ -25,6 +25,8 @@ const NEW_BOARD_PLACEHOLDER_FOCUSED = 'Enter board name';
 })
 export class SidebarComponent implements OnInit {
   @Output() boardSelected = new EventEmitter<Board>();
+  @Output() toggleUserPanel = new EventEmitter<void>();
+
 
   userName: string = 'User Name';
   boards: Board[] = [];
