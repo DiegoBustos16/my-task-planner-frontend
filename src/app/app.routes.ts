@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 import { AuthLayoutComponent } from './components/layouts/auth-layout.component';
 import { MainLayoutComponent } from './components/layouts/main-layout.component';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: 'main',
-    component: MainLayoutComponent
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: '',
