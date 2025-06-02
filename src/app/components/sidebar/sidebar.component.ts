@@ -13,6 +13,7 @@ import { Board } from '../../models/board.model';
 import { BoardService } from '../../services/board.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
+import { ToastComponent } from '../toast/toast.component';
 
 const NEW_BOARD_PLACEHOLDER_DEFAULT = 'New Board...';
 const NEW_BOARD_PLACEHOLDER_FOCUSED = 'Enter board name';
@@ -39,6 +40,10 @@ export class SidebarComponent implements OnInit {
 
   newBoardPlaceholder: string = NEW_BOARD_PLACEHOLDER_DEFAULT;
 
+  toastMessage = '';
+  toastType: 'success' | 'error' = 'success';
+
+
   constructor(
     private boardService: BoardService,
     private userService: UserService,
@@ -60,8 +65,8 @@ export class SidebarComponent implements OnInit {
         this.boards = boards;
         this.totalPages = totalPages;
       },
-      error: err => {
-        console.error('Error fetching boards:', err);
+      error: (err) => {
+        this.showToast('Error getting boards', 'error');
       }
     });
   }
@@ -71,8 +76,8 @@ export class SidebarComponent implements OnInit {
       next: user => {
         this.userName = user.firstName + ' ' + user.lastName;
       },
-      error: err => {
-        console.error('Error fetching user:', err);
+      error: (err) => {
+        this.showToast('Error getting user', 'error');
       }
     });
   }
@@ -120,11 +125,10 @@ export class SidebarComponent implements OnInit {
     if (trimmedName) {
       this.boardService.createBoard({ boardName: trimmedName }).subscribe({
         next: created => {
-          console.log('Board created:', created);
           this.fetchBoards();
         },
         error: err => {
-          console.error('Error creating board:', err);
+          this.showToast('Error creating board', 'error');
         }
       });
     }

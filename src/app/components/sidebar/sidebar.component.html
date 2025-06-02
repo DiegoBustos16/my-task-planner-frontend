@@ -120,4 +120,9 @@
       </div>
     </div>
   </div>
+  <app-toast
+        *ngIf="toastMessage"
+        [message]="toastMessage"
+        [type]="toastType"
+  ></app-toast>
 </div>
