@@ -10,19 +10,29 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: '',
+    path: 'login',
     component: AuthLayoutComponent,
     children: [
       {
-        path: 'login',
+        path: '',
         loadComponent: () =>
-          import('./components/login/login.component').then(m => m.LoginComponent)
+          import('./components/login/login.component').then(m => m.LoginComponent),
       },
+    ],
+  },
+  {
+    path: 'register',
+    component: AuthLayoutComponent,
+    children: [
       {
-        path: 'register',
+        path: '',
         loadComponent: () =>
-          import('./components/register/register.component').then(m => m.RegisterComponent)
-      }
-    ]
+          import('./components/register/register.component').then(m => m.RegisterComponent),
+      },
+    ],
+  },
+  {
+    path: '**',
+    redirectTo: 'main'
   }
 ];
