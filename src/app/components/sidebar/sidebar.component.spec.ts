@@ -50,12 +50,12 @@ describe('SidebarComponent', () => {
   });
 
   it('should handle error on fetchBoards', () => {
-    spyOn(console, 'error');
     boardServiceSpy.getBoards.and.returnValue(throwError(() => new Error('Fetch error')));
 
     component.fetchBoards();
 
-    expect(console.error).toHaveBeenCalledWith('Error fetching boards:', jasmine.any(Error));
+    expect(component.toastMessage).toBe('Error getting boards');
+    expect(component.toastType).toBe('error');
   });
 
   it('should go to next page if current page < totalPages', () => {
@@ -165,7 +165,7 @@ describe('SidebarComponent', () => {
     expect(component.getInitial()).toBe('D');
   });
 
-    it('should fetch user on init', () => {
+  it('should fetch user on init', () => {
     userServiceSpy.getUser.and.returnValue(of({ firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com', name: 'Jane' }));
     boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 1 }));
 
@@ -176,25 +176,23 @@ describe('SidebarComponent', () => {
   });
 
   it('should handle error on fetchUser', () => {
-    spyOn(console, 'error');
     userServiceSpy.getUser.and.returnValue(throwError(() => new Error('User error')));
 
     component.fetchUser();
 
-    expect(console.error).toHaveBeenCalledWith('Error fetching user:', jasmine.any(Error));
+    expect(component.toastMessage).toBe('Error getting user');
+    expect(component.toastType).toBe('error');
   });
 
   it('should handle error on createBoard', fakeAsync(() => {
-    spyOn(console, 'error');
     component.newBoardName = 'Board With Error';
     boardServiceSpy.createBoard.and.returnValue(throwError(() => new Error('Create error')));
 
     component.handleBoardCreationAttempt();
     tick();
 
-    expect(console.error).toHaveBeenCalledWith('Error creating board:', jasmine.any(Error));
-    expect(component.newBoardName).toBe('');
-    expect(component.newBoardPlaceholder).toBe('New Board...');
+    expect(component.toastMessage).toBe('Error creating board');
+    expect(component.toastType).toBe('error');
   }));
 
   it('should reset selectedBoard when selecting new board', () => {
