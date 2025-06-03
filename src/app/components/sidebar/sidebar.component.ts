@@ -13,7 +13,7 @@ import { Board } from '../../models/board.model';
 import { BoardService } from '../../services/board.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
-import { ToastComponent } from '../toast/toast.component';
+//import { ToastComponent } from '../toast/toast.component';
 
 const NEW_BOARD_PLACEHOLDER_DEFAULT = 'New Board...';
 const NEW_BOARD_PLACEHOLDER_FOCUSED = 'Enter board name';
@@ -51,7 +51,7 @@ export class SidebarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchBoards();
+    this.fetchBoards(null);
     this.fetchUser();
   }
 
@@ -59,17 +59,22 @@ export class SidebarComponent implements OnInit {
     return this.userName.charAt(0).toUpperCase();
   }
 
-  fetchBoards(): void {
-    this.boardService.getBoards(this.currentPage).subscribe({
-      next: ({ boards, totalPages }) => {
-        this.boards = boards;
+  fetchBoards(boardIdToSelect: number | null): void {
+    this.boardService.getBoards(this.currentPage - 1).subscribe({
+      next: ({ content, totalPages }) => {
+        this.boards = content;
         this.totalPages = totalPages;
+        const boardToSelect = this.boards.find(b => b.id === boardIdToSelect);
+        if (boardToSelect) {
+          this.selectBoard(boardToSelect);
+        }
       },
       error: (err) => {
-        this.showToast('Error getting boards', 'error');
+        //this.showToast('Error getting boards', 'error');
       }
     });
   }
+
 
   fetchUser(): void {
     this.userService.getUser().subscribe({
@@ -77,7 +82,7 @@ export class SidebarComponent implements OnInit {
         this.userName = user.firstName + ' ' + user.lastName;
       },
       error: (err) => {
-        this.showToast('Error getting user', 'error');
+        //this.showToast('Error getting user', 'error');
       }
     });
   }
@@ -85,14 +90,14 @@ export class SidebarComponent implements OnInit {
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.fetchBoards();
+      this.fetchBoards(this.selectedBoard?.id || null);
     }
   }
 
   prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.fetchBoards();
+      this.fetchBoards(this.selectedBoard?.id || null);
     }
   }
 
@@ -123,12 +128,12 @@ export class SidebarComponent implements OnInit {
     const trimmedName = this.newBoardName.trim();
 
     if (trimmedName) {
-      this.boardService.createBoard({ boardName: trimmedName }).subscribe({
+      this.boardService.createBoard({ title: trimmedName }).subscribe({
         next: created => {
-          this.fetchBoards();
+          this.fetchBoards(created.id);
         },
-        error: err => {
-          this.showToast('Error creating board', 'error');
+        error: () => {
+          //this.showToast('Error creating board', 'error');
         }
       });
     }

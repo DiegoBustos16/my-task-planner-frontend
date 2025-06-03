@@ -56,16 +56,16 @@
         class="px-4 py-2 border-t border-lightblue cursor-pointer"
         [ngClass]="{
           'bg-lightblue text-darkblue': board === selectedBoard,
-          'hover:bg-lightblue hover:text-darkblue': board !== selectedBoard
+          'hover:bg-darkblue hover:text-lightblue hover:font-bold': board !== selectedBoard
         }"
-        [title]="board.boardName"
+        [title]="board.title"
       >
-        <span *ngIf="!isCollapsed">{{ board.boardName }}</span>
+        <span *ngIf="!isCollapsed">{{ board.title }}</span>
         <span
           *ngIf="isCollapsed"
           class="block text-center text-lg font-bold"
         >
-          {{ board.boardName.charAt(0).toUpperCase() }}
+          {{ board.title.charAt(0).toUpperCase() }}
         </span>
       </div>
 
@@ -120,9 +120,11 @@
       </div>
     </div>
   </div>
+  <!-- 
   <app-toast
         *ngIf="toastMessage"
         [message]="toastMessage"
         [type]="toastType"
   ></app-toast>
+  -->
 </div>
