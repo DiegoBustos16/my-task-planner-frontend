@@ -21,9 +21,6 @@ export class MainLayoutComponent {
 
   toggleUserPanel(): void {
     this.showUserPanel = !this.showUserPanel;
-    if (this.showUserPanel) {
-      this.selectedBoard = null;
-    }
   }
 
   selectedBoardId(): number | null {

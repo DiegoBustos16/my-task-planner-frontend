@@ -8,7 +8,7 @@
     <ng-container *ngIf="showUserPanel">
     </ng-container>
 
-    <ng-container *ngIf="selectedBoard">
+    <ng-container *ngIf="selectedBoard && !showUserPanel">
       <router-outlet />
     </ng-container>
 
