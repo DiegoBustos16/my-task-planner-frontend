@@ -12,10 +12,11 @@ export class BoardService {
 
   constructor(private http: HttpClient) {}
 
-  getBoards(page: number): Observable<{ boards: Board[]; totalPages: number }> {
+  getBoards(page: number): Observable<{ content: Board[]; totalPages: number }> {
     const params = new HttpParams().set('page', page.toString());
-    return this.http.get<{ boards: Board[]; totalPages: number }>(API_ENDPOINTS.boards.getAll, { params });
+    return this.http.get<{ content: Board[]; totalPages: number }>(API_ENDPOINTS.boards.getAll, { params });
   }
+
 
   createBoard(board: Partial<Board>): Observable<Board> {
     return this.http.post<Board>(API_ENDPOINTS.boards.create, board);
