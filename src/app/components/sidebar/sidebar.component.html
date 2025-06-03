@@ -17,13 +17,12 @@
     </div>
 
     <!-- Header -->
-    <div class="flex flex-col h-full transition-all duration-300 ease-in-out"
+    <div class="flex flex-col h-full transition-all"
       [ngClass]="{
-        'opacity-100 translate-x-0 delay-100': !isCollapsed,
-        'opacity-0 -translate-x-10 delay-0 pointer-events-none': isCollapsed}">
+        'opacity-100 delay-100 duration-300 ease-in-out': !isCollapsed,
+        'opacity-0 duration-0 pointer-events-none': isCollapsed}">
       <button
         class="flex items-center space-x-2 p-4 justify-between cursor-pointer hover:text-lightblue transition-colors duration-200"
-        *ngIf="!isCollapsed"
         (click)="toggleUserPanel.emit()"
       >
         <div
@@ -37,7 +36,7 @@
       
 
       <!-- New board input -->
-      <div *ngIf="!isCollapsed" class="border-t border-lightblue">
+      <div class="border-t border-lightblue">
         <input
           #newBoardInput
           [(ngModel)]="newBoardName"
@@ -60,18 +59,11 @@
         }"
         [title]="board.title"
       >
-        <span *ngIf="!isCollapsed">{{ board.title }}</span>
-        <span
-          *ngIf="isCollapsed"
-          class="block text-center text-lg font-bold"
-        >
-          {{ board.title.charAt(0).toUpperCase() }}
-        </span>
+        <span>{{ board.title }}</span>
       </div>
 
       <!-- Pagination -->
       <div
-        *ngIf="!isCollapsed"
         class="mt-auto px-4 py-2 border-t border-lightblue flex justify-between items-center text-marfilwhite"
       >
         <button
@@ -119,7 +111,6 @@
         </button>
       </div>
     </div>
-  </div>
   <!-- 
   <app-toast
         *ngIf="toastMessage"
