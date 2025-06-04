@@ -4,7 +4,8 @@ import {
   OnInit,
   Output,
   ElementRef,
-  HostListener
+  HostListener,
+  ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -28,6 +29,12 @@ export class SidebarComponent implements OnInit {
   @Output() boardSelected = new EventEmitter<Board>();
   @Output() toggleUserPanel = new EventEmitter<void>();
 
+  @ViewChild('ListContainer') listContainerRef!: ElementRef;
+  @ViewChild('Pagination') paginationRef!: ElementRef;
+  @ViewChild('header') headerRef!: ElementRef;
+  @ViewChild('newBoardInputContainer') newBoardInputContainerRef!: ElementRef;
+  @ViewChild('boardList') boardListRef!: ElementRef;
+
 
   userName: string = 'User Name';
   boards: Board[] = [];
@@ -50,17 +57,36 @@ export class SidebarComponent implements OnInit {
     private elementRef: ElementRef
   ) {}
 
+  @HostListener('window:resize')
+  onResize() {
+    this.calculateAndFetchBoards();
+  }
+
   ngOnInit(): void {
-    this.fetchBoards(null);
     this.fetchUser();
+    setTimeout(() => this.calculateAndFetchBoards(), 0);
   }
 
   getInitial(): string {
     return this.userName.charAt(0).toUpperCase();
   }
 
-  fetchBoards(boardIdToSelect: number | null): void {
-    this.boardService.getBoards(this.currentPage - 1).subscribe({
+  calculateAndFetchBoards(): void {
+    const headerHeight = this.headerRef?.nativeElement?.offsetHeight || 0;
+    const paginationHeight = this.paginationRef?.nativeElement?.
+    offsetHeight || 0;
+    const newBoardInputHeight = this.newBoardInputContainerRef?.nativeElement?.offsetHeight || 0;
+
+    const viewportHeight = window.innerHeight;
+    const availableHeight = viewportHeight - headerHeight - paginationHeight - newBoardInputHeight;
+    const itemHeight = this.boardListRef?.nativeElement?.offsetHeight / this.boards.length || 41;
+    const itemsPerPage = Math.floor(availableHeight / itemHeight);
+
+    this.fetchBoards(this.selectedBoard?.id || null, itemsPerPage);
+  }
+
+  fetchBoards(boardIdToSelect: number | null, size: number): void {
+    this.boardService.getBoards(this.currentPage - 1, size).subscribe({
       next: ({ content, totalPages }) => {
         this.boards = content;
         this.totalPages = totalPages;
@@ -70,7 +96,7 @@ export class SidebarComponent implements OnInit {
         }
       },
       error: (err) => {
-        //this.showToast('Error getting boards', 'error');
+        this.showToast('Error getting boards', 'error');
       }
     });
   }
@@ -82,7 +108,7 @@ export class SidebarComponent implements OnInit {
         this.userName = user.firstName + ' ' + user.lastName;
       },
       error: (err) => {
-        //this.showToast('Error getting user', 'error');
+        this.showToast('Error getting user', 'error');
       }
     });
   }
@@ -90,14 +116,14 @@ export class SidebarComponent implements OnInit {
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.fetchBoards(this.selectedBoard?.id || null);
+      this.calculateAndFetchBoards();
     }
   }
 
   prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.fetchBoards(this.selectedBoard?.id || null);
+      this.calculateAndFetchBoards();
     }
   }
 
@@ -130,10 +156,11 @@ export class SidebarComponent implements OnInit {
     if (trimmedName) {
       this.boardService.createBoard({ title: trimmedName }).subscribe({
         next: created => {
-          this.fetchBoards(created.id);
+          this.selectBoard(created);
+          this.calculateAndFetchBoards
         },
         error: () => {
-          //this.showToast('Error creating board', 'error');
+          this.showToast('Error creating board', 'error');
         }
       });
     }

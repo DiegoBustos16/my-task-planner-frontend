@@ -21,8 +21,8 @@
       [ngClass]="{
         'opacity-100 delay-100 duration-300 ease-in-out': !isCollapsed,
         'opacity-0 duration-0 pointer-events-none': isCollapsed}">
-      <button
-        class="flex items-center space-x-2 p-4 justify-between cursor-pointer hover:text-lightblue transition-colors duration-200"
+      <button #header
+        class="flex items-center space-x-2 p-4  justify-between cursor-pointer hover:text-lightblue transition-colors duration-200"
         (click)="toggleUserPanel.emit()"
       >
         <div
@@ -30,13 +30,13 @@
         >
           {{ getInitial() }}
         </div>
-        <span class="flex-1">{{ userName }}</span>
+        <span class="flex-1 truncate">{{ userName }}</span>
       </button>
 
       
 
       <!-- New board input -->
-      <div class="border-t border-lightblue">
+      <div #newBoardInputContainer class="border-t border-lightblue">
         <input
           #newBoardInput
           [(ngModel)]="newBoardName"
@@ -44,26 +44,30 @@
           (focus)="onNewBoardInputFocus()"
           type="text"
           [placeholder]="newBoardPlaceholder"
-          class="w-full px-4 py-2 text-lightblue bg-darkblue focus:outline-none"
+          class="w-full px-4 py-2 text-lightblue bg-darkblue h-13 focus:outline-none"
         />
       </div>
 
-      <!-- Board list -->
-      <div
-        *ngFor="let board of boards"
-        (click)="selectBoard(board)"
-        class="px-4 py-2 border-t border-lightblue cursor-pointer"
-        [ngClass]="{
-          'bg-lightblue text-darkblue': board === selectedBoard,
-          'hover:bg-darkblue hover:text-lightblue hover:font-bold': board !== selectedBoard
-        }"
-        [title]="board.title"
-      >
-        <span>{{ board.title }}</span>
+      <div #ListContainer class="flex flex-col h-full">
+        <!-- Ítems -->
+        <div
+          #BoardList
+          *ngFor="let board of boards; let i = index"
+          (click)="selectBoard(board)"
+          class="flex-1 w-full max-h-13 px-4 py-2 border-t border-lightblue cursor-pointer overflow-hidden flex items-center"
+          [ngClass]="{
+            'border-b': i === boards.length - 1,
+            'bg-lightblue text-darkblue': board === selectedBoard,
+            'hover:bg-darkblue hover:text-lightblue hover:font-bold': board !== selectedBoard
+          }"
+          [title]="board.title"
+        >
+          <span class="truncate">{{ board.title }}</span>
+        </div>
       </div>
 
       <!-- Pagination -->
-      <div
+      <div #Pagination
         class="mt-auto px-4 py-2 border-t border-lightblue flex justify-between items-center text-marfilwhite"
       >
         <button

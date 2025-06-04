@@ -12,8 +12,8 @@ export class BoardService {
 
   constructor(private http: HttpClient) {}
 
-  getBoards(page: number): Observable<{ content: Board[]; totalPages: number }> {
-    const params = new HttpParams().set('page', page.toString());
+  getBoards(page: number, size: number): Observable<{ content: Board[]; totalPages: number }> {
+    const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
     return this.http.get<{ content: Board[]; totalPages: number }>(API_ENDPOINTS.boards.getAll, { params });
   }
 
