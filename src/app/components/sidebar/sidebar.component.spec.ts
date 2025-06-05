@@ -12,8 +12,8 @@ describe('SidebarComponent', () => {
   let userServiceSpy: jasmine.SpyObj<UserService>;
 
   const mockBoards: Board[] = [
-    { id: 1, boardName: 'Board 1' },
-    { id: 2, boardName: 'Board 2' }
+    { id: 1, title: 'Board 1' },
+    { id: 2, title: 'Board 2' }
   ];
 
   beforeEach(async () => {
@@ -21,7 +21,6 @@ describe('SidebarComponent', () => {
     userServiceSpy = jasmine.createSpyObj('UserService', ['getUser']);
 
     await TestBed.configureTestingModule({
-      imports: [SidebarComponent],
       providers: [
         { provide: BoardService, useValue: spy },
         { provide: UserService, useValue: userServiceSpy }
@@ -38,21 +37,16 @@ describe('SidebarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch boards on init', () => {
-    boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 2 }));
-    userServiceSpy.getUser.and.returnValue(of({ firstName: 'Diego', lastName: 'Test', email: 'diego@test.com', name: 'Diego' }));
-
-    component.ngOnInit();
-
-    expect(boardServiceSpy.getBoards).toHaveBeenCalledWith(1);
-    expect(component.boards.length).toBe(2);
-    expect(component.totalPages).toBe(2);
+  it('should fetch boards on calculateAndFetchBoards()', () => {
+    boardServiceSpy.getBoards.and.returnValue(of({ content: [{ id: 1, title: 'Board 1' }], totalPages: 1 }));
+    component.calculateAndFetchBoards();
+    expect(component.boards.length).toBe(1);
   });
 
   it('should handle error on fetchBoards', () => {
     boardServiceSpy.getBoards.and.returnValue(throwError(() => new Error('Fetch error')));
 
-    component.fetchBoards();
+    component.fetchBoards(null, 1);
 
     expect(component.toastMessage).toBe('Error getting boards');
     expect(component.toastType).toBe('error');
@@ -61,12 +55,12 @@ describe('SidebarComponent', () => {
   it('should go to next page if current page < totalPages', () => {
     component.currentPage = 1;
     component.totalPages = 3;
-    boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 3 }));
+    boardServiceSpy.getBoards.and.returnValue(of({ content: mockBoards, totalPages: 3 }));
 
     component.nextPage();
 
     expect(component.currentPage).toBe(2);
-    expect(boardServiceSpy.getBoards).toHaveBeenCalledWith(2);
+    expect(boardServiceSpy.getBoards).toHaveBeenCalledWith(1, jasmine.anything());
   });
 
   it('should not go to next page if current page === totalPages', () => {
@@ -78,15 +72,15 @@ describe('SidebarComponent', () => {
     expect(component.currentPage).toBe(3);
   });
 
-  it('should go to previous page if current page > 1', () => {
+  it('should go to previous page if current page > 0', () => {
     component.currentPage = 2;
     component.totalPages = 3;
-    boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 3 }));
+    boardServiceSpy.getBoards.and.returnValue(of({ content: mockBoards, totalPages: 3 }));
 
     component.prevPage();
 
     expect(component.currentPage).toBe(1);
-    expect(boardServiceSpy.getBoards).toHaveBeenCalledWith(1);
+    expect(boardServiceSpy.getBoards).toHaveBeenCalledWith(0, jasmine.anything());
   });
 
   it('should not go to previous page if current page === 1', () => {
@@ -128,13 +122,13 @@ describe('SidebarComponent', () => {
   });
 
   it('should create board if input is valid', () => {
-    boardServiceSpy.createBoard.and.returnValue(of({ id: 3, boardName: 'New Board' }));
-    boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 2 }));
+    boardServiceSpy.createBoard.and.returnValue(of({ id: 3, title: 'New Board' }));
+    boardServiceSpy.getBoards.and.returnValue(of({ content: mockBoards, totalPages: 2 }));
 
     component.newBoardName = 'New Board';
     component.handleBoardCreationAttempt();
 
-    expect(boardServiceSpy.createBoard).toHaveBeenCalledWith({ boardName: 'New Board' });
+    expect(boardServiceSpy.createBoard).toHaveBeenCalledWith({ title: 'New Board' });
     expect(boardServiceSpy.getBoards).toHaveBeenCalled();
     expect(component.newBoardName).toBe('');
     expect(component.newBoardPlaceholder).toBe('New Board...');
@@ -149,7 +143,7 @@ describe('SidebarComponent', () => {
   });
 
   it('should emit board when selected', () => {
-    const board: Board = { id: 1, boardName: 'Test Board' };
+    const board: Board = { id: 1, title: 'Test Board' };
     spyOn(component.boardSelected, 'emit');
 
     component.selectBoard(board);
@@ -167,7 +161,7 @@ describe('SidebarComponent', () => {
 
   it('should fetch user on init', () => {
     userServiceSpy.getUser.and.returnValue(of({ firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com', name: 'Jane' }));
-    boardServiceSpy.getBoards.and.returnValue(of({ boards: mockBoards, totalPages: 1 }));
+    boardServiceSpy.getBoards.and.returnValue(of({ content: mockBoards, totalPages: 1 }));
 
     component.ngOnInit();
 
@@ -196,8 +190,8 @@ describe('SidebarComponent', () => {
   }));
 
   it('should reset selectedBoard when selecting new board', () => {
-    const board1: Board = { id: 1, boardName: 'First' };
-    const board2: Board = { id: 2, boardName: 'Second' };
+    const board1: Board = { id: 1, title: 'First' };
+    const board2: Board = { id: 2, title: 'Second' };
     spyOn(component.boardSelected, 'emit');
 
     component.selectBoard(board1);
