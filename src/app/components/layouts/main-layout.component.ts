@@ -3,12 +3,13 @@ import { SidebarComponent } from "../sidebar/sidebar.component";
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Board } from "../../models/board.model";
+import { UserManagementComponent } from "../user-management/user-management.component";
 
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
   standalone: true,
-  imports: [SidebarComponent, RouterModule, CommonModule],
+  imports: [SidebarComponent, UserManagementComponent, RouterModule, CommonModule],
 })
 export class MainLayoutComponent {
   selectedBoard: Board | null = null;

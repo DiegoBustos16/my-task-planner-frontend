@@ -14,5 +14,8 @@ export const API_ENDPOINTS = {
   },
   users: {
     getCurrent: `${API_BASE_URL}/user/me`,
+    update: `${API_BASE_URL}/user/me`,
+    updatePassword: `${API_BASE_URL}/user/me/password`,
+    delete: `${API_BASE_URL}/user/me`
   },
 };
