@@ -14,7 +14,7 @@ import { Board } from '../../models/board.model';
 import { BoardService } from '../../services/board.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
-//import { ToastComponent } from '../toast/toast.component';
+import { ToastComponent } from '../toast/toast.component';
 
 const NEW_BOARD_PLACEHOLDER_DEFAULT = 'New Board...';
 const NEW_BOARD_PLACEHOLDER_FOCUSED = 'Enter board name';
@@ -22,7 +22,7 @@ const NEW_BOARD_PLACEHOLDER_FOCUSED = 'Enter board name';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ToastComponent],
   templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent implements OnInit {
@@ -157,7 +157,7 @@ export class SidebarComponent implements OnInit {
       this.boardService.createBoard({ title: trimmedName }).subscribe({
         next: created => {
           this.selectBoard(created);
-          this.calculateAndFetchBoards
+          this.calculateAndFetchBoards();
         },
         error: () => {
           this.showToast('Error creating board', 'error');
@@ -174,5 +174,11 @@ export class SidebarComponent implements OnInit {
     this.boardSelected.emit(board);
     this.newBoardName = '';
     this.newBoardPlaceholder = NEW_BOARD_PLACEHOLDER_DEFAULT;
+  }
+
+  showToast(message: string, type: 'success' | 'error' = 'success') {
+    this.toastMessage = message;
+    this.toastType = type;
+    setTimeout(() => this.toastMessage = '', 3000);
   }
 }
