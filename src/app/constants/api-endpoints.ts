@@ -10,12 +10,16 @@ export const API_ENDPOINTS = {
   boards: {
     getAll: `${API_BASE_URL}/board/me`,
     create: `${API_BASE_URL}/board`,
-    getById: (id: string) => `${API_BASE_URL}/board/${id}`,
+    update: (boardId: number) => `${API_BASE_URL}/board/${boardId}`,
+    delete: (boardId: number) => `${API_BASE_URL}/board/${boardId}`,
   },
   users: {
     getCurrent: `${API_BASE_URL}/user/me`,
     update: `${API_BASE_URL}/user/me`,
     updatePassword: `${API_BASE_URL}/user/me/password`,
     delete: `${API_BASE_URL}/user/me`
+  },
+  tasks: {
+    getByBoard: (boardId: number) => `${API_BASE_URL}/task/${boardId}`,
   },
 };

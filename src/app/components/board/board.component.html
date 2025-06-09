@@ -1,0 +1,58 @@
+<div *ngIf="board" class="flex flex-col space-y-4 h-full" >
+    <div #boardTitleContainer class="flex items-center justify-center bg-darkblue text-lightblue p-4 ">
+
+        <input class="text-center text-xl font-semibold px-2 py-1 bg-darkblue text-lightblue focus:outline-none"
+            #titleInputRef
+            [(ngModel)]="boardTitle"
+            type="text"
+            [placeholder]="boardTitle"
+            (keydown.enter)="saveTitleIfChanged()"
+            (focus)="onFocusTitle()"
+            (blur)="onBlurTitle()"
+            />
+
+        <button *ngIf="showDeleteButton"
+            class="absolute right-10 text-red-100 hover:text-red-700 text-xl focus:outline-none z-10"
+            (click)="deleteBoard()"
+            aria-label="Delete board">
+            ✖
+        </button>
+      </div>
+
+
+    <drag-scroll
+    class="flex-1 py-6 w-full overflow-x-auto overflow-y-hidden cursor-grab
+    [&::-webkit-scrollbar]:h-2 
+    [&::-webkit-scrollbar-track]:bg-darkgrey 
+    [&::-webkit-scrollbar-thumb]:bg-darkblue"
+    [scrollbar-hidden]="true"
+  >
+    <ng-container *ngIf="loading">
+    <p>Loading tasks...</p>
+    </ng-container>
+
+        <div class="flex flex-row space-x-4 select-none drag-scroll-item">
+            <ng-container *ngIf="!loading && tasks.length > 0">
+                <app-task *ngFor="let task of tasks" [task]="task"></app-task>
+            </ng-container>
+        </div>
+
+        <ng-container *ngIf="!loading && tasks.length === 0">
+        <p class="text-gray-500">This board has no tasks.</p>
+        </ng-container>
+    </drag-scroll>
+
+    <app-confirm-dialog
+        *ngIf="showConfirm"
+        [message]="confirmMessage"
+        (confirm)="handleConfirm()"
+        (cancel)="handleCancel()"
+    ></app-confirm-dialog>
+
+    <app-toast
+        *ngIf="toastMessage"
+        [message]="toastMessage"
+        [type]="toastType"
+    ></app-toast>
+
+</div>
