@@ -64,7 +64,7 @@ export class BoardComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error al cargar las tareas del board:', err);
+        this.showToast('Failed to load board data.', 'error');
         this.tasks = [];
         this.loading = false;
       }
@@ -83,10 +83,9 @@ export class BoardComponent implements OnInit {
         this.board.title = trimmedTitle;
         this.originalTitle = trimmedTitle;
         this.titleInputRef.nativeElement.blur();
-        console.log('Board title updated successfully:', this.board.title);
         },
         error: (err) => {
-          console.error('Error updating board title:', err);
+          this.showToast('Failed to update board.', 'error');
           this.boardTitle = this.originalTitle;
         }
       });
@@ -129,11 +128,10 @@ export class BoardComponent implements OnInit {
     this.openConfirm('Are you sure you want to delete this board?', () => {
       this.boardService.deleteBoard(this.board.id).subscribe({
         next: () => {
-          console.log('Board deleted successfully');
           this.boardService.notifyBoardDeleted();
         },
         error: (err) => {
-          console.error('Error deleting board:', err);
+          this.showToast('Failed to delete board.', 'error');
         }
       });
     });
