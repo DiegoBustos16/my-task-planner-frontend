@@ -1,7 +1,7 @@
 <div *ngIf="board" class="flex flex-col space-y-4 h-full" >
-    <div #boardTitleContainer class="flex items-center justify-center bg-darkblue text-lightblue p-4 ">
+    <div #boardTitleContainer class="flex items-center justify-center bg-lightgrey p-4 border border-lightblue">
 
-        <input class="text-center text-xl font-semibold px-2 py-1 bg-darkblue text-lightblue focus:outline-none"
+        <input class="text-center mx-7 w-full h-full text-3xl font-semibold px-2 py-1 text-marfilwhite focus:outline-none focus:text-lightblue truncate" 
             #titleInputRef
             [(ngModel)]="boardTitle"
             type="text"
@@ -12,10 +12,12 @@
             />
 
         <button *ngIf="showDeleteButton"
-            class="absolute right-10 text-red-100 hover:text-red-700 text-xl focus:outline-none z-10"
+            class="absolute right-10 text-xl focus:outline-none"
             (click)="deleteBoard()"
             aria-label="Delete board">
-            ✖
+            <svg viewBox="0 0 32 32" fill="#fb2c36" version="1.1" class="w-7 h-7" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30 7.249h-5.598l-3.777-5.665c-0.137-0.202-0.366-0.334-0.625-0.334h-8c-0 0-0.001 0-0.001 0-0.259 0-0.487 0.131-0.621 0.331l-0.002 0.003-3.777 5.665h-5.599c-0.414 0-0.75 0.336-0.75 0.75s0.336 0.75 0.75 0.75v0h3.315l1.938 21.319c0.036 0.384 0.356 0.682 0.747 0.682 0 0 0 0 0.001 0h16c0 0 0.001 0 0.001 0 0.39 0 0.71-0.298 0.745-0.679l0-0.003 1.938-21.319h3.316c0.414 0 0.75-0.336 0.75-0.75s-0.336-0.75-0.75-0.75v0zM12.401 2.75h7.196l2.999 4.499h-13.195zM23.314 29.25h-14.63l-1.863-20.5 18.358-0.001zM11 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0zM16 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0zM21 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0z"></path>
+                </svg>
         </button>
       </div>
 
@@ -36,10 +38,6 @@
                 <app-task *ngFor="let task of tasks" [task]="task"></app-task>
             </ng-container>
         </div>
-
-        <ng-container *ngIf="!loading && tasks.length === 0">
-        <p class="text-gray-500">This board has no tasks.</p>
-        </ng-container>
     </drag-scroll>
 
     <app-confirm-dialog
