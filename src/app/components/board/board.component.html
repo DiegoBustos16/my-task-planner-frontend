@@ -28,16 +28,34 @@
     [&::-webkit-scrollbar-track]:bg-darkgrey 
     [&::-webkit-scrollbar-thumb]:bg-darkblue"
     [scrollbar-hidden]="true"
-  >
+    >
+
+    
+
     <ng-container *ngIf="loading">
     <p>Loading tasks...</p>
     </ng-container>
 
-        <div class="flex flex-row space-x-4 select-none drag-scroll-item">
-            <ng-container *ngIf="!loading && tasks.length > 0">
-                <app-task *ngFor="let task of tasks" [task]="task"></app-task>
-            </ng-container>
+    <div class="flex flex-row space-x-4 drag-scroll-item">
+        
+        <div #newTaskInputContainer class="border border-dashed border-lightblue min-w-60 h-20 p-3 my-2 bg-lightgrey content-center select-none">
+            <input
+            #newTaskInput
+            [(ngModel)]="newTaskName"
+            (keydown.enter)="handleTaskCreationAttempt()"
+            (focus)="onNewTaskInputFocus()"
+            (blur)="onNewTaskInputBlur()"
+            type="text"
+            [placeholder]="newTaskPlaceholder"
+            class="w-full px-4 py-2 text-lightblue text-lg font-bold text-center focus:outline-none"
+            />
         </div>
+
+        <ng-container *ngIf="!loading && tasks.length > 0">
+            <app-task *ngFor="let task of tasks" [task]="task" 
+            (taskDeleted)="onTaskDeleted($event)"></app-task>
+        </ng-container>
+    </div>
     </drag-scroll>
 
     <app-confirm-dialog

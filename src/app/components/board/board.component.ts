@@ -10,6 +10,8 @@ import { DragScrollComponent } from 'ngx-drag-scroll';
 import { ToastComponent } from '../toast/toast.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
+const NEW_TASK_PLACEHOLDER_DEFAULT = 'New Task...';
+const NEW_TASK_PLACEHOLDER_FOCUSED = 'Enter task name';
 
 @Component({
   selector: 'app-board',
@@ -22,6 +24,7 @@ export class BoardComponent implements OnInit {
   @Input() board!: Board;
 
   @ViewChild('titleInputRef') titleInputRef!: ElementRef<HTMLInputElement>;
+  @ViewChild('newTaskInputContainer') newTaskInputContainerRef!: ElementRef;
 
   tasks: Task[] = [];
   loading = true;
@@ -31,6 +34,9 @@ export class BoardComponent implements OnInit {
 
   boardTitle: string = '';
   originalTitle: string = '';
+
+  newTaskName: string = '';
+  newTaskPlaceholder: string = NEW_TASK_PLACEHOLDER_DEFAULT;
 
   showConfirm = false;
   confirmMessage = '';
@@ -84,7 +90,7 @@ export class BoardComponent implements OnInit {
         this.originalTitle = trimmedTitle;
         this.titleInputRef.nativeElement.blur();
         },
-        error: (err) => {
+        error: () => {
           this.showToast('Failed to update board.', 'error');
           this.boardTitle = this.originalTitle;
         }
@@ -135,6 +141,40 @@ export class BoardComponent implements OnInit {
         }
       });
     });
+  }
+
+  onNewTaskInputFocus(): void {
+      this.newTaskPlaceholder = NEW_TASK_PLACEHOLDER_FOCUSED;
+  }
+
+  onNewTaskInputBlur(): void {
+    this.newTaskName = '';
+    this.newTaskPlaceholder = NEW_TASK_PLACEHOLDER_DEFAULT;
+  }
+
+  handleTaskCreationAttempt(): void {
+    const trimmedName = this.newTaskName.trim();
+    const createdTask: Task = {
+        title: trimmedName,
+        id: this.board.id,
+        completed:false,
+        items: []
+      };
+    if (trimmedName) {
+      this.taskService.createTask(this.board.id, createdTask).subscribe({
+        next: created => {
+          this.tasks.unshift(created)
+          this.onNewTaskInputBlur()
+        },
+        error: () => {
+          this.showToast('Error creating task', 'error');
+        }
+      });
+    }
+  }
+
+  onTaskDeleted(taskId: number): void {
+  this.tasks = this.tasks.filter(task => task.id !== taskId);
   }
 
   showToast(message: string, type: 'success' | 'error' = 'success') {

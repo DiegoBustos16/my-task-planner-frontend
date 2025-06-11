@@ -21,5 +21,15 @@ export const API_ENDPOINTS = {
   },
   tasks: {
     getByBoard: (boardId: number) => `${API_BASE_URL}/task/${boardId}`,
+    create: (boardId: number) => `${API_BASE_URL}/task/${boardId}`,
+    update: (taskId: number) => `${API_BASE_URL}/task/${taskId}`,
+    toggleCheck: (taskId: number) => `${API_BASE_URL}/task/toggle/${taskId}`,
+    delete: (taskId: number) => `${API_BASE_URL}/task/${taskId}`
   },
+  items: {
+    create: (taskId: number) => `${API_BASE_URL}/item/${taskId}`,
+    update: (itemId: number) => `${API_BASE_URL}/item/${itemId}`,
+    toggleCheck: (itemId: number) => `${API_BASE_URL}/item/toggle/${itemId}`,
+    delete: (itemId: number) => `${API_BASE_URL}/item/${itemId}`
+  }
 };
