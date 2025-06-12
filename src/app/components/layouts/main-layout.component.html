@@ -1,0 +1,26 @@
+<div class="h-screen flex bg-darkgrey text-marfilwhite overflow-y-hidden ">
+  <!-- Sidebar -->
+  <app-sidebar (boardSelected)="setSelectedBoard($event)"
+  (toggleUserPanel)="toggleUserPanel()" />
+  <!-- Main content area -->
+  
+  <div class="flex-1 p-6 overflow-x-auto max-w-full">
+    <ng-container *ngIf="showUserPanel">
+      <app-user-management /> 
+    </ng-container>
+
+    <ng-container *ngIf="selectedBoard && !showUserPanel">
+        <app-board
+        [board]="selectedBoard">
+        </app-board>
+    </ng-container>
+
+    <div *ngIf="!selectedBoard && !showUserPanel" class="text-center text-marfilwhite text-3xl mt-20">
+      Welcome to <span class="text-lightblue">Your Task Planner</span>!
+      <p class="mt-4 text-xl">
+        Here, you can manage all your tasks and goals, simply and efficiently.
+      </p>
+    </div>
+  </div>
+</div>
+      
