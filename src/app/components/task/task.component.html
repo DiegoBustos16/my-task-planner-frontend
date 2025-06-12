@@ -1,0 +1,131 @@
+<div #taskContainer
+  class="border min-w-100 p-3 my-2 min-h-20
+          outline-none flex flex-col select-none bg-darkblue"
+  tabindex="0"
+  [ngClass]="getTaskClasses(task, isFocused)"
+  (focusin)="focusInContainer()"
+  (focusout)="focusOutContainer()"
+>
+  <!-- Task title input -->
+    <textarea
+    #titleInputTask
+    [(ngModel)]="taskTitle"
+    [ngClass]="{
+    'select-none':!isFocused,
+    }"
+    placeholder="{{ taskTitle }}"
+    rows="1"
+    class="resize-none px-4 py-2 text-marfilwhite text-lg font-bold text-center
+            focus:outline-none focus:text-lightblue w-full overflow-hidden"
+    (keydown.enter)="onEnter($event)"
+    (input)="autoGrow($event)"
+    (blur)="onBlurTitle()"
+    ></textarea>
+
+
+  
+
+  <!-- Input to add a new item -->
+  <input *ngIf="isFocused"
+    class="w-full px-4 py-2 text-lightblue bg-darkblue border border-y-lightblue border-x-darkblue focus:outline-none"
+    placeholder="Add item..."
+    [(ngModel)]="newItemTitle"
+    (keydown.enter)="createItem()"
+    />
+
+  <!-- List of task items -->
+    <ul class="list-none">
+    <li *ngFor="let item of getSortedItemsDesc(); let i = index; let last = last"
+        class="w-full px-4 py-2 text-lightblue bg-darkblue border-b border-lightblue border-x-darkblue focus:outline-none flex items-center justify-between gap-2"
+        [ngClass]="{
+          'mb-2': last && task.items.length !== 0 && isFocused,
+          'border-t': i === 0 && !isFocused
+        }">
+      
+      <div class="flex items-center gap-2 w-full">
+        <label class="relative w-5 h-5 flex-shrink-0">
+          <input
+            type="checkbox"
+            [checked]="item.itemChecked"
+            (change)="toggleItemCheck(item)"
+            (mousedown)="$event.preventDefault()"
+            class="peer absolute inset-0 opacity-0 cursor-pointer"
+          />
+          <div
+            class="w-full h-full bg-darkblue border border-lightblue rounded-none peer-checked:border-green-500
+                  flex items-center justify-center"
+          >
+            <svg *ngIf="item.itemChecked" fill="#05df72" viewBox="0 0 32 32" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 16.577l2.194-2.195 5.486 5.484L24.804 7.743 27 9.937l-14.32 14.32z"/>
+            </svg>
+          </div>
+        </label>
+        
+        <textarea
+          #titleInputItem
+          [(ngModel)]="editableTitles[item.id]"
+          (input)="autoGrow($event)"
+          (keydown.enter)="onEnterItem($event, item)"
+          (blur)="onBlurItem(item)"
+          rows="1"
+          class="resize-none w-full bg-transparent px-2 py-1 text-marfilwhite font-medium
+            focus:outline-none focus:text-lightblue overflow-hidden"
+        ></textarea>
+      </div>
+
+
+      <!-- Item delete button -->
+      <button *ngIf="isFocused" class="focus:outline-none flex items-center justify-center"
+              aria-label="Delete item"
+              (click)="deleteItem(item.id)"
+              >
+        <svg viewBox="0 0 32 32" fill="#fb2c36" version="1.1" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+          <path d="M30 7.249h-5.598l-3.777-5.665c-0.137-0.202-0.366-0.334-0.625-0.334h-8c-0 0-0.001 0-0.001 0-0.259 0-0.487 0.131-0.621 0.331l-0.002 0.003-3.777 5.665h-5.599c-0.414 0-0.75 0.336-0.75 0.75s0.336 0.75 0.75 0.75v0h3.315l1.938 21.319c0.036 0.384 0.356 0.682 0.747 0.682 0 0 0 0 0.001 0h16c0 0 0.001 0 0.001 0 0.39 0 0.71-0.298 0.745-0.679l0-0.003 1.938-21.319h3.316c0.414 0 0.75-0.336 0.75-0.75s-0.336-0.75-0.75-0.75v0zM12.401 2.75h7.196l2.999 4.499h-13.195zM23.314 29.25h-14.63l-1.863-20.5 18.358-0.001zM11 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0zM16 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0zM21 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0z"></path>
+        </svg>
+      </button>
+    </li>
+  </ul>
+
+
+  <!-- Action buttons (visible on focus) -->
+  <div *ngIf="isFocused" class="flex justify-between gap-2">
+    <button class="focus:outline-none flex items-center justify-center"
+            (click)="deleteTask()"
+            aria-label="Delete task">
+            <svg viewBox="0 0 32 32" fill="#fb2c36" version="1.1" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30 7.249h-5.598l-3.777-5.665c-0.137-0.202-0.366-0.334-0.625-0.334h-8c-0 0-0.001 0-0.001 0-0.259 0-0.487 0.131-0.621 0.331l-0.002 0.003-3.777 5.665h-5.599c-0.414 0-0.75 0.336-0.75 0.75s0.336 0.75 0.75 0.75v0h3.315l1.938 21.319c0.036 0.384 0.356 0.682 0.747 0.682 0 0 0 0 0.001 0h16c0 0 0.001 0 0.001 0 0.39 0 0.71-0.298 0.745-0.679l0-0.003 1.938-21.319h3.316c0.414 0 0.75-0.336 0.75-0.75s-0.336-0.75-0.75-0.75v0zM12.401 2.75h7.196l2.999 4.499h-13.195zM23.314 29.25h-14.63l-1.863-20.5 18.358-0.001zM11 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0zM16 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0zM21 11.25c-0.414 0-0.75 0.336-0.75 0.75v0 14c0 0.414 0.336 0.75 0.75 0.75s0.75-0.336 0.75-0.75v0-14c-0-0.414-0.336-0.75-0.75-0.75v0z"></path>
+                </svg>
+        </button>
+        <button *ngIf="task.items.length==0"
+        class="focus:outline-none flex items-center justify-center w-9 h-9"
+        (click)="toggleCheckTask()"
+        aria-label="Complete task">
+
+            <!-- SVG si task.completed es false -->
+            <svg *ngIf="!task.completed" fill="#05df72" viewBox="0 0 32 32" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 16.577l2.194-2.195 5.486 5.484L24.804 7.743 27 9.937l-14.32 14.32z"/>
+            </svg>
+
+            <!-- SVG si task.completed es true -->
+            <svg *ngIf="task.completed" fill="#fb2c36" viewBox="0 0 16 16" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fill-rule="evenodd"/>
+            </svg>
+
+        </button>
+  </div>
+
+<!-- Confirm message component -->
+  <app-confirm-dialog
+        *ngIf="showConfirm"
+        [message]="confirmMessage"
+        (confirm)="handleConfirm()"
+        (cancel)="handleCancel()"
+    ></app-confirm-dialog>
+
+  <!-- Toast message component -->
+  <app-toast
+    *ngIf="toastMessage"
+    [message]="toastMessage"
+    [type]="toastType"
+  ></app-toast>
+</div>

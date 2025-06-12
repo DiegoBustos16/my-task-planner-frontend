@@ -65,6 +65,9 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.fetchUser();
     setTimeout(() => this.calculateAndFetchBoards(), 0);
+    this.boardService.boardDeleted$.subscribe(() => {
+      setTimeout(() => this.calculateAndFetchBoards(), 0);
+    });
   }
 
   getInitial(): string {

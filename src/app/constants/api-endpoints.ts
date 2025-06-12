@@ -10,7 +10,8 @@ export const API_ENDPOINTS = {
   boards: {
     getAll: `${API_BASE_URL}/board/me`,
     create: `${API_BASE_URL}/board`,
-    getById: (id: string) => `${API_BASE_URL}/board/${id}`,
+    update: (boardId: number) => `${API_BASE_URL}/board/${boardId}`,
+    delete: (boardId: number) => `${API_BASE_URL}/board/${boardId}`,
   },
   users: {
     getCurrent: `${API_BASE_URL}/user/me`,
@@ -18,4 +19,17 @@ export const API_ENDPOINTS = {
     updatePassword: `${API_BASE_URL}/user/me/password`,
     delete: `${API_BASE_URL}/user/me`
   },
+  tasks: {
+    getByBoard: (boardId: number) => `${API_BASE_URL}/task/${boardId}`,
+    create: (boardId: number) => `${API_BASE_URL}/task/${boardId}`,
+    update: (taskId: number) => `${API_BASE_URL}/task/${taskId}`,
+    toggleCheck: (taskId: number) => `${API_BASE_URL}/task/toggle/${taskId}`,
+    delete: (taskId: number) => `${API_BASE_URL}/task/${taskId}`
+  },
+  items: {
+    create: (taskId: number) => `${API_BASE_URL}/item/${taskId}`,
+    update: (itemId: number) => `${API_BASE_URL}/item/${itemId}`,
+    toggleCheck: (itemId: number) => `${API_BASE_URL}/item/toggle/${itemId}`,
+    delete: (itemId: number) => `${API_BASE_URL}/item/${itemId}`
+  }
 };
