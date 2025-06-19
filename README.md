@@ -1,5 +1,5 @@
 
-![Logo](public\logo.png)
+![Logo](public/logo.png)
 
 # My Task Planner - Frontend
 
