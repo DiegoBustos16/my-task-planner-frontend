@@ -21,6 +21,7 @@ describe('SidebarComponent', () => {
     userServiceSpy = jasmine.createSpyObj('UserService', ['getUser']);
 
     await TestBed.configureTestingModule({
+      imports: [SidebarComponent],
       providers: [
         { provide: BoardService, useValue: spy },
         { provide: UserService, useValue: userServiceSpy }
@@ -162,6 +163,7 @@ describe('SidebarComponent', () => {
   it('should fetch user on init', () => {
     userServiceSpy.getUser.and.returnValue(of({ firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com', name: 'Jane' }));
     boardServiceSpy.getBoards.and.returnValue(of({ content: mockBoards, totalPages: 1 }));
+    boardServiceSpy.boardDeleted$ = of();
 
     component.ngOnInit();
 

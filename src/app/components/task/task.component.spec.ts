@@ -56,6 +56,8 @@ describe('TaskComponent', () => {
 
   it('autoGrow adjusts height', () => {
     const ta = document.createElement('textarea');
+    ta.value = 'line1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10';
+    Object.defineProperty(ta, 'scrollHeight', { value: 100, configurable: true });
     ta.style.height = '10px';
     component.autoGrow({ target: ta } as any);
     expect(ta.style.height).toBe('100px');
