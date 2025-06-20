@@ -1,0 +1,9 @@
+<div
+  class="fixed bg-darkgrey border bottom-4 right-4 px-5 py-3 font-semibold shadow-md animate-fadeInOut z-50"
+  [ngClass]="{
+    'text-green-600 border-green-600': type === 'success',
+    'text-red-500 border-red-500': type === 'error'
+  }"
+>
+  {{ message }}
+</div>
