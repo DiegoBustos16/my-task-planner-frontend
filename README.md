@@ -1,5 +1,5 @@
 
-![Logo](public\logo.png)
+![Logo](public/logo.png)
 
 # My Task Planner - Frontend
 
@@ -33,8 +33,34 @@ My Task Planner - Frontend is an Angular-based single-page web application that 
 
 This frontend application is deployed and maintained in a production environment through automated CI/CD pipelines. It is built using Angular’s production optimization tools and served as a static SPA.
 
+The live application is accessible at:
+
+
+https://my-task-planner-frontend.vercel.app/
+
 
 This project is intended to be used in production as a deployed web client. Manual build or local run is not required for end users.
+
+
+## Screenshots
+
+![Login Screenshot](screenshots/screenshot_login.png)
+
+![Register Screenshot](screenshots/screenshot_register.png)
+
+![Main Page Screenshot](screenshots/screenshot_main_page.png)
+
+![Tasks Screenshot](screenshots/screenshot_tasks.png)
+
+![Empty Board Screenshot](screenshots/screenshot_empty_board.png)
+
+![Edit Board Screenshot](screenshots/screenshot_edit_board.png)
+
+![Open Task Screenshot](screenshots/screenshot_open_task.png)
+
+![User Manage Screenshot](screenshots/screenshot_user_manage.png)
+
+![Password Change Screenshot](screenshots/screenshot_password_change.png)
 
 
 ## Roadmap
